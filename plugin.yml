@@ -1,0 +1,11 @@
+name: TruffleHog Secret Scanner
+description: Scans for secrets in the container image.
+author: https://github.com/liamstevens
+requirements: []
+configuration:
+  properties:
+    image_uri:
+      type: string
+      title: Image URI
+      description: The URI of the container image to scan.
+  additionalProperties: false
