@@ -8,9 +8,8 @@ Add the following to your `pipeline.yml`:
 
 ```yml
 steps: 
-  ...
-  plugins:
-    - cultureamp/trufflehog
+  - plugins:
+    - cultureamp/trufflehog:
         trufflehog_uri: trufflesecurity/trufflehog:latest
         image_uri: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-image:latest
 ```

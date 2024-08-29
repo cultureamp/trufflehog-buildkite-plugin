@@ -4,7 +4,7 @@ author: https://github.com/liamstevens
 requirements: []
 configuration:
   properties:
-    trufflhog_uri:
+    trufflehog_image_uri:
       type: string
       title: TruffleHog URI
       description: The URI of the TruffleHog image.
