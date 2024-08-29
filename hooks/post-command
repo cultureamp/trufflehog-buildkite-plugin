@@ -1,13 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-IMAGE="$BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI"
-curl -sSfL -k https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin v3.81.9
-echo "Performing container scan"
-
-results = $(trufflehog docker --image="$IMAGE" --json --only-verified --fail)
+image="$BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI"
+echo "--- :docker: Pulling images"
+docker pull trufflesecurity/trufflehog:latest
+echo "--- :docker: Running TruffleHog"
+results="$(docker run --rm -it -v '$PWD:/pwd' trufflesecurity/trufflehog:latest docker --image=${image} --json --only-verified --fail)"
 trufflehog_status=$?
 files = $(echo $results | jq '. | .SourceMetadata.Data.Docker.file')
 
 # If any findings, annotate the build.
-[ $trufflehog_status -ne 0 ] && buildkite-agent annotate --style 'success' "No secrets detected by TruffleHog." || buildkite-agent annotate --style 'error' "Trufflehog found secrets in the container image: $RESULTS"
+if [[ $trufflehog_status -ne 0 ]]; then 
+    buildkite-agent annotate --style 'error' "Trufflehog found secrets in the container image:\n $files"
+else
+    buildkite-agent annotate --style 'success' "No secrets detected by TruffleHog."
+fi
