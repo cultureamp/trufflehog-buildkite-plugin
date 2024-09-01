@@ -16,11 +16,11 @@ steps:
 
 ## Configuration
 
-### `trufflehog_uri` (required, string)
+### `trufflehog-image-uri` (optional, string)
 
 The Docker URI for the TruffleHog image. 
 
-### `image_uri` (required, string)
+### `image-uri` (required, string)
 
 The URI of the image to scan for secrets.
 
