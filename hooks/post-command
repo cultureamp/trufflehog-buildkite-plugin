@@ -8,7 +8,7 @@ if [[ -z "${BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI}" ]]; then
     exit 1
 fi
 
-trufflehog_image_version="${BUILDKITE_PLUGIN_TRUFFLEHOG_TRUFFLEHOG_IMAGE_URI:trufflesecurity/trufflehog:latest}"
+trufflehog_image_version="${BUILDKITE_PLUGIN_TRUFFLEHOG_TRUFFLEHOG_IMAGE_URI:-trufflesecurity/trufflehog:latest}"
 temp_results="/tmp/results.json"
 touch $temp_results
 echo "--- :docker: Pulling images"
