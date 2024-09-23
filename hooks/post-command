@@ -2,9 +2,8 @@
 set -euo pipefail
 
 # Fail if the target image is not set
-if [[ -z "${BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI}" ]]; then
-    echo "image-uri is required"
-    buildkite-agent annotate --style 'error' "TruffleHog: `image-uri` is required"
+if [[ -z "${BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI:-}" ]]; then
+    echo "trufflehog plugin: image-uri is a required parameter" 1>&2
     exit 1
 fi
 
@@ -12,7 +11,7 @@ trufflehog_image_version="${BUILDKITE_PLUGIN_TRUFFLEHOG_TRUFFLEHOG_IMAGE_URI:-tr
 temp_results="/tmp/results.json"
 touch $temp_results
 echo "--- :docker: Pulling images"
-docker pull "${trufflehog_image_version}" 
+docker pull "${trufflehog_image_version}"
 echo "--- :docker: Running TruffleHog"
 docker run --rm -it -v "$PWD:/pwd" "${trufflehog_image_version}" docker --image="${BUILDKITE_PLUGIN_TRUFFLEHOG_IMAGE_URI}" --json --only-verified | tee "${temp_results}"
 echo "--- :docker: Parsing results"
@@ -20,7 +19,7 @@ files="$(cat $temp_results | jq '. | .SourceMetadata.Data.Docker.file')"
 files_status=$?
 
 # If any findings, annotate the build.
-if [[ $files_status -eq 0 ]]; then 
+if [[ $files_status -eq 0 ]]; then
     buildkite-agent annotate --style 'error' "Trufflehog found secrets in the container image:\n $files"
     exit 1
 else
