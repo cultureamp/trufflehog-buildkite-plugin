@@ -4,8 +4,10 @@ author: https://github.com/liamstevens
 requirements: []
 configuration:
   properties:
-    image_uri:
+    trufflehog-image-uri:
       type: string
-      title: Image URI
+      description: The URI of the TruffleHog image.
+    image-uri:
+      type: string
       description: The URI of the container image to scan.
   additionalProperties: false
